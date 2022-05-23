@@ -192,19 +192,22 @@
 
     </div>
 
-    <script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
     <script src="../jquery.menu-aim.js" type="text/javascript"></script>
-    <script src="js/bootstrap.min.js" type="text/javascript"></script>
     <script>
 
-        var $menu = $(".dropdown-menu");
+        var menu = document.querySelector(".dropdown-menu");
 
         // jQuery-menu-aim: <meaningful part of the example>
         // Hook up events to be fired on menu row activation.
-        $menu.menuAim({
-            activate: activateSubmenu,
-            deactivate: deactivateSubmenu
-        });
+
+        //menu.menuAim({
+        //    activate: activateSubmenu,
+        //    deactivate: deactivateSubmenu
+        //});
+        menuAim(".dropdown-menu",{
+            'activate': activateSubmenu,
+            'deactivate': deactivateSubmenu,
+        })
         // jQuery-menu-aim: </meaningful part of the example>
 
         // jQuery-menu-aim: the following JS is used to show and hide the submenu
@@ -212,47 +215,71 @@
         // doesn't care how you do this, it just fires the activate and deactivate
         // events at the right times so you know when to show and hide your submenus.
         function activateSubmenu(row) {
-            var $row = $(row),
-                submenuId = $row.data("submenuId"),
-                $submenu = $("#" + submenuId),
-                height = $menu.outerHeight(),
-                width = $menu.outerWidth();
+            //var row = document.querySelector(row);
+            var submenuId = row.dataset.submenuId;
+            var submenu = document.querySelector("#" + submenuId);
+            var height = menu.offsetHeight;
+            var width = menu.offsetWidth;
 
             // Show the submenu
-            $submenu.css({
-                display: "block",
-                top: -1,
-                left: width - 3,  // main should overlay submenu
-                height: height - 4  // padding for main dropdown's arrow
-            });
+            submenu.style.display = "block";
+            submenu.style.top = -1 + 'px';
+            submenu.style.left = (width - 3) + 'px';
+            submenu.style.height = (height - 4) + 'px';
 
             // Keep the currently activated row's highlighted look
-            $row.find("a").addClass("maintainHover");
+            var maintainHoverLinks = row.querySelectorAll("a");
+            for (var i = 0; i < maintainHoverLinks.length; i++) {
+                var element = maintainHoverLinks[i];
+                element.classList.add("maintainHover");
+            }
         }
 
         function deactivateSubmenu(row) {
-            var $row = $(row),
-                submenuId = $row.data("submenuId"),
-                $submenu = $("#" + submenuId);
+            var row = document.querySelector(row),
+                submenuId = row.dataset.submenuId,
+                submenu = document.querySelector("#" + submenuId);
 
             // Hide the submenu and remove the row's highlighted look
-            $submenu.css("display", "none");
-            $row.find("a").removeClass("maintainHover");
+            submenu.style.display = "none";
+            var maintainHoverLinks = row.querySelectorAll("a");
+            for (var i = 0; i < maintainHoverLinks.length; i++) {
+                var element = maintainHoverLinks[i];
+                element.classList.remove("maintainHover");
+            }
         }
 
         // Bootstrap's dropdown menus immediately close on document click.
         // Don't let this event close the menu if a submenu is being clicked.
         // This event propagation control doesn't belong in the menu-aim plugin
         // itself because the plugin is agnostic to bootstrap.
-        $(".dropdown-menu li").click(function(e) {
-            e.stopPropagation();
+        var dropdownmenu_li = document.querySelectorAll(".dropdown-menu li");
+        for (var i = 0; i < dropdownmenu_li.length; i++) {
+            var element = dropdownmenu_li[i];
+            element.addEventListener('click',function(e) {
+                e.stopPropagation();
+            });
+        }
+
+        document.querySelector('.dropdown-toggle').addEventListener('click', function(e) {
+            e.preventDefault();
+            this.parentElement.classList.add('open');
         });
 
-        $(document).click(function() {
+        document.addEventListener('click',function() {
             // Simply hide the submenu on any click. Again, this is just a hacked
             // together menu/submenu structure to show the use of jQuery-menu-aim.
-            $(".popover").css("display", "none");
-            $("a.maintainHover").removeClass("maintainHover");
+            var popovers = document.querySelectorAll(".popover")
+            for (var i = 0; i < popovers.length; i++) {
+                var element = popovers[i];
+                element.style.display = 'none';
+            }
+
+            var maintainHoverLinks = document.querySelectorAll("a.maintainHover")
+            for (var i = 0; i < maintainHoverLinks.length; i++) {
+                var element = maintainHoverLinks[i];
+                element.classList.remove('maintainHover');
+            }
         });
 
     </script>
