@@ -82,7 +82,7 @@ const menuAim = function (selector,callbacks) {
 
         //     return this;
         // };
-        let menu2 = document.querySelectorAll(selector)
+        let menu2 = document.querySelector(selector);
 
         setTimeout(() => {
             init(menu2,callbacks)
@@ -101,7 +101,7 @@ const menuAim = function (selector,callbacks) {
                     submenuSelector: "*",
                     submenuDirection: "right",
                     tolerance: 75,  // bigger = more forgivey when entering submenu
-                    enter: (element)=>{ element.querySelector('a').classList.add('maintainHover') },
+                    enter: (element)=>{},
                     exit: ()=>{},
                     activate: (element)=>{
                         callbacks.activate(element)
@@ -191,6 +191,7 @@ const menuAim = function (selector,callbacks) {
              */
             var possiblyActivate = function(row) {
                     var delay = activationDelay();
+                    console.log('delay > ', delay)
 
                     if (delay) {
                         timeoutId = setTimeout(function() {
@@ -216,21 +217,20 @@ const menuAim = function (selector,callbacks) {
                         return 0;
                     }
 
-                    var offset = menu.outerWidth,
-                        upperLeft = {
-                            x: offset.left,
-                            y: offset.top - options.tolerance
+                    var upperLeft = {
+                            x: menu2.getClientRects()[0].left,
+                            y: menu2.getClientRects()[0].top - options.tolerance
                         },
                         upperRight = {
-                            x: offset.left + menu.outerWidth,
+                            x: menu2.getClientRects()[0].left + menu2.getClientRects()[0].width,
                             y: upperLeft.y
                         },
                         lowerLeft = {
-                            x: offset.left,
-                            y: offset.top + menu.outerHeight + options.tolerance
+                            x: menu2.getClientRects()[0].left,
+                            y: menu2.getClientRects()[0].top + menu2.getClientRects()[0].height + options.tolerance
                         },
                         lowerRight = {
-                            x: offset.left + menu.outerWidth,
+                            x: menu2.getClientRects()[0].left + menu2.getClientRects()[0].width,
                             y: lowerLeft.y
                         },
                         loc = mouseLocs[mouseLocs.length - 1],
@@ -244,8 +244,8 @@ const menuAim = function (selector,callbacks) {
                         prevLoc = loc;
                     }
 
-                    if (prevLoc.x < offset.left || prevLoc.x > lowerRight.x ||
-                        prevLoc.y < offset.top || prevLoc.y > lowerRight.y) {
+                    if (prevLoc.x < menu2.getClientRects()[0].left || prevLoc.x > lowerRight.x ||
+                        prevLoc.y < menu2.getClientRects()[0].top || prevLoc.y > lowerRight.y) {
                         // If the previous mouse location was outside of the entire
                         // menu's bounds, immediately activate.
                         return 0;
@@ -324,9 +324,13 @@ const menuAim = function (selector,callbacks) {
              * Hook up initial menu events
              */
             menu.onmouseleave = mouseleaveMenu;
-            document.querySelector(selector + options.rowSelector).onmouseenter = mouseenterRow;
-            document.querySelector(selector + options.rowSelector).onmouseleave = mouseleaveRow;
-            document.querySelector(selector + options.rowSelector).onclick = clickRow;
+            var menu_options = document.querySelectorAll(selector + options.rowSelector);
+            for (var i = 0; i < menu_options.length; i++) {
+                var element = menu_options[i];
+                element.onmouseenter = mouseenterRow;
+                element.onmouseleave = mouseleaveRow;
+                element.onclick = clickRow;
+            }
 
             document.onmousemove = mousemoveDocument;
 

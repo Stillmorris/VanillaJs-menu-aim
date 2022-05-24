@@ -217,7 +217,7 @@
         function activateSubmenu(row) {
             //var row = document.querySelector(row);
             var submenuId = row.dataset.submenuId;
-            var submenu = document.querySelector("#" + submenuId);
+            var submenu = document.getElementById(submenuId);
             var height = menu.offsetHeight;
             var width = menu.offsetWidth;
 
@@ -236,9 +236,8 @@
         }
 
         function deactivateSubmenu(row) {
-            var row = document.querySelector(row),
-                submenuId = row.dataset.submenuId,
-                submenu = document.querySelector("#" + submenuId);
+            var submenuId = row.dataset.submenuId;
+            var submenu = document.querySelector("#" + submenuId);
 
             // Hide the submenu and remove the row's highlighted look
             submenu.style.display = "none";
