@@ -102,14 +102,14 @@ const menuAim = function (selector,callbacks) {
                     submenuDirection: "right",
                     tolerance: 75,  // bigger = more forgivey when entering submenu
                     enter: (element)=>{},
-                    exit: ()=>{},
+                    exit: (element)=>{return true},
                     activate: (element)=>{
-                        callbacks.activate(element)
+                        callbacks.activate(element);
                     },
                     deactivate: (element)=>{
                         callbacks.deactivate(element)
                     },
-                    exitMenu: ()=>{}
+                    exitMenu: (element)=>{return true}
                 };
 
             var MOUSE_LOCS_TRACKED = 3,  // number of past mouse locations to track
